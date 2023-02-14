@@ -66,7 +66,7 @@ This repository contains the scripts used to calculate the network variables of 
 
 4. medByForm.py
 
-	Script retrieving for each innovation (buzz and change), and for each phase of diffusion, the users who adopt it at that phase; then retrieving for each network variable the median value of each of these sets to characterise each of the words. For the control words, the same procedure is used except that all their users over the 5 years considered are taken into account.  
+Script retrieving for each innovation (buzz and change), and for each phase of diffusion, the users who adopt it at that phase; then retrieving for each network variable the median value of each of these sets to characterise each of the words. For the control words, the same procedure is used except that all their users over the 5 years considered are taken into account.  
 
 	-**Input** :
 
