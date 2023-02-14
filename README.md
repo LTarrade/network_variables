@@ -48,14 +48,14 @@ This repository contains the scripts used to calculate the network variables of 
 
 	- **Input** : 
 
-		-*--path_tokenizedTweets* : Path to the directory of tokenized tweets
-		-*--path_out* : Path to the directory containing the output
-		-*--path_users* : path to the dataframe containing the values of the network variables for each user
-		-*--path_df* : path to the dataframe containing informations about the buzzes and changes
-		-*--path_idByForm* : path to the json file containing the identifiers of words
-		-*--path_idByUser* : path to the json file containing the identifiers of users
-		-*--path_usersByMonth* : path to the json file containing the number of total users by month
-		-*--path_occForms* : path to the json file containing the total number of occurrences of all forms by month 
+		- *--path_tokenizedTweets* : Path to the directory of tokenized tweets
+		- *--path_out* : Path to the directory containing the output
+		- *--path_users* : path to the dataframe containing the values of the network variables for each user
+		- *--path_df* : path to the dataframe containing informations about the buzzes and changes
+		- *--path_idByForm* : path to the json file containing the identifiers of words
+		- *--path_idByUser* : path to the json file containing the identifiers of users
+		- *--path_usersByMonth* : path to the json file containing the number of total users by month
+		- *--path_occForms* : path to the json file containing the total number of occurrences of all forms by month 
 
 	- **Output** : 
 
@@ -70,14 +70,14 @@ This repository contains the scripts used to calculate the network variables of 
 
 	-**Input**
 
-		-*--path_out* : Path to the directory containing the output
-		-*--path_users* : path to the dataframe containing the values of the network variables for each user
-		-*--path_df* : path to the dataframe containing informations about the buzzes and changes
-		-*--path_idByForm* : path to the json file containing the identifiers of words
-		-*--path_idByUser* : path to the json file containing the identifiers of users
-		-*--path_usersByMonthByForm* : path to the json file containing the number of total users by month by form
-		-*--path_randomWords* : path to the directory containing the samples of random words (dataframes)
-		-*--path_randomWordsUsers* : path to the json file containing the users of random words by month
+		- *--path_out* : Path to the directory containing the output
+		- *--path_users* : path to the dataframe containing the values of the network variables for each user
+		- *--path_df* : path to the dataframe containing informations about the buzzes and changes
+		- *--path_idByForm* : path to the json file containing the identifiers of words
+		- *--path_idByUser* : path to the json file containing the identifiers of users
+		- *--path_usersByMonthByForm* : path to the json file containing the number of total users by month by form
+		- *--path_randomWords* : path to the directory containing the samples of random words (dataframes)
+		- *--path_randomWordsUsers* : path to the json file containing the users of random words by month
 
 	- **Output** : 
 
@@ -89,8 +89,8 @@ This repository contains the scripts used to calculate the network variables of 
 
 	-**Input**
 
-		-*--path_out* : path to the directory containing the output
-		-*--path_df* : path to the dataframe containing median values by word and by period
+		- *--path_out* : path to the directory containing the output
+		- *--path_df* : path to the dataframe containing median values by word and by period
 		-*--path_pred* : path to the dictionary that contains the prediction results if it already exists
 	
 
