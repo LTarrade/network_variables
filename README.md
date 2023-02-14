@@ -91,7 +91,7 @@ This repository contains the scripts used to calculate the network variables of 
 
 		- *--path_out* : path to the directory containing the output
 		- *--path_df* : path to the dataframe containing median values by word and by period
-		-*--path_pred* : path to the dictionary that contains the prediction results if it already exists
+		- *--path_pred* : path to the dictionary that contains the prediction results if it already exists
 	
 
 	- **Output** : 
