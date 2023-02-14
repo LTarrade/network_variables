@@ -1,6 +1,6 @@
 # network_variables
 
-This directory contains the scripts used to calculate the network variables of the users in the corpus of tweets, to select the group of control words, to characterise the words, the scripts used to calculate the statistics relating to the differences between distributions and to visualise the distributions, as well as the code used for the predictions on buzz and changes.
+This repository contains the scripts used to calculate the network variables of the users in the corpus of tweets, to select the group of control words, to characterise the words, the scripts used to calculate the statistics relating to the differences between distributions and to visualise the distributions, as well as the code used for the predictions on buzz and changes.
 
 1. network_var_networkit.py
 
