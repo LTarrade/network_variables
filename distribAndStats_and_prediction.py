@@ -43,43 +43,38 @@ logger.info("path_df : "+path_df+" ; path_out : "+path_out)
 # function that calculates for each period the Kruskal-Wallis statistic for all three distributions and then the Mann-Whitney statistic for each pair of distributions and returns a dictionary containing the results.
 def stats_distrib(df_varNetwork_medByForm, period) : 
 
-	columns = ['clusteringCoefficient_networkit', 'PageRank_networkit', 'betweennessInComm_toScale', 'lengthMean_rw']
-	columns_period = [col+"_"+period for col in columns]
+    columns = ['clusteringCoefficient_networkit', 'PageRank_networkit', 'betweennessInComm_toScale', 'lengthMean_rw']
+    columns_period = [col+"_"+period for col in columns]
 
-	# We assign to the control words their global value in period p
-	temp1 = df_varNetwork_medByForm[~(df_varNetwork_medByForm.type=="random")]
-	temp2 = df_varNetwork_medByForm[df_varNetwork_medByForm.type=="random"]
-	for col in columns_period : 
-		temp2[col]=temp2[col[:-len("_"+period)]]
-	df_varNetwork_medByForm = pd.concat([temp1,temp2])
+    # We assign to the control words their global value in period p
+    temp1 = df_varNetwork_medByForm[~(df_varNetwork_medByForm.type=="random")]
+    temp2 = df_varNetwork_medByForm[df_varNetwork_medByForm.type=="random"]
+    for col in columns_period : 
+        temp2[col]=temp2[col[:-len("_"+period)]]
+    df_varNetwork_medByForm = pd.concat([temp1,temp2])
 
-	sous_df = df_varNetwork_medByForm[columns_period]
-	sous_df["type"] = df_varNetwork_medByForm["type"]
+    sous_df = df_varNetwork_medByForm[columns_period]
+    sous_df["type"] = df_varNetwork_medByForm["type"]
 
-	results_stats = {}
+    results_stats = {}
 
-	for col in columns_period : 
+    for col in columns_period : 
+        
+        random = sous_df[sous_df.type=="random"][col].values.tolist()
+        change = sous_df[sous_df.type=="change"][col].values.tolist()
+        buzz = sous_df[sous_df.type=="buzz"][col].values.tolist()
 
-		results_stats[col] = {}
+        results_stats[col] = {}
+        results_stats[col]["kruskal"] = kruskal(random,change,buzz)
+        results_stats[col]["dunn"] = {}
+        
+        data = [random, change, buzz]
+        dunn_results = sp.posthoc_dunn(data, p_adjust="bonferroni")
+        results_stats[col]["dunn"]["random-change"] = dunn_results.loc[1,2]
+        results_stats[col]["dunn"]["random-buzz"] = dunn_results.loc[1,3]
+        results_stats[col]["dunn"]["change-buzz"] = dunn_results.loc[2,3]
 
-		results_stats[col]["kruskal"] = (kruskal(sous_df[sous_df.type=="random"][col],
-			sous_df[sous_df.type=="buzz"][col],
-			sous_df[sous_df.type=="change"][col]))
-
-		results_stats[col]["mann-whitney"] = {"random-change":{}, "random-buzz":{}, "change-buzz":{}}
-
-		for pair in results_stats[col]["mann-whitney"] : 
-
-			first_type, second_type = pair.split("-")[0], pair.split("-")[1]
-			results_stats[col]["mann-whitney"][pair] = {}
-
-			for alternative in ["two-sided", "greater", "less"] : 
-				
-				results_stats[col]["mann-whitney"][pair][alternative]= mannwhitneyu(sous_df[sous_df.type==first_type][col],
-					sous_df[sous_df.type==second_type][col],alternative=alternative)
-
-
-	return results_stats
+    return results_stats
 
 
 df = pd.read_csv(path_df, index_col=0)
@@ -136,7 +131,7 @@ nb = 0
 # to adjust the scales on the graph
 dic_lim = {'clusteringCoefficient_networkit': (0, 0.22), 'PageRank_networkit': (0.1e-07, 4.5e-07), 'betweennessInComm_toScale': (-0.4, 2), 'lengthMean_rw': (2, 12)}
 
-legend = {"innov":"Innovation", "prop":"Propagation", "fix":"Fixation", "clusteringCoefficient_networkit" : "Coefficient de clustering", "PageRank_networkit":"Score de PageRank", "betweennessInComm_toScale":"Centralité au sein de la communauté", "lengthMean_rw":"Nombre de pas moyen\npour sortir de la communauté"}
+legend = {"innov":"Innovation", "prop":"Propagation", "fix":"Fixation/Decline", "clusteringCoefficient_networkit" : "Clustering coefficient", "PageRank_networkit":"PageRank score", "betweennessInComm_toScale":"betweenness within the community", "lengthMean_rw":"Average number of steps\nto exit the community"}
 colors = {"change":"#4282B3", "buzz":"#819E57", "random":"#F5A614"}
 
 for i,p in enumerate(period) : 
@@ -161,11 +156,11 @@ for i,p in enumerate(period) :
 plt.subplots_adjust(wspace=0.1)
 plt.subplots_adjust(hspace=0.04)
 
-legend_elements = [Line2D([0], [0], marker='o', color="#eaeaf2", label='Changements',
+legend_elements = [Line2D([0], [0], marker='o', color="#eaeaf2", label='Changes',
 						  markerfacecolor=colors["change"], markersize=8),
-				   Line2D([0], [0], marker='o', color='#eaeaf2', label='Buzz',
+				   Line2D([0], [0], marker='o', color='#eaeaf2', label='Buzzes',
 						  markerfacecolor=colors["buzz"], markersize=8),
-				   Line2D([0], [0], marker='o', color='#eaeaf2', label='Mots témoins',
+				   Line2D([0], [0], marker='o', color='#eaeaf2', label='Control words',
 						  markerfacecolor=colors["random"], markersize=8)]
 ax[i][j].legend(handles=legend_elements, loc='lower right', fontsize=16)
 
