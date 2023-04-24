@@ -125,7 +125,7 @@ new_df = pd.concat(allDfToConcat, axis=1)
 new_df["type"] = typeDf.index.map(typeDf.type)
 new_df["period"] = [name.split("_")[1] for name in new_df.index]
 
-fig, ax = plt.subplots(4, 3, figsize=[18,24])
+fig, ax = plt.subplots(4, 3, figsize=[18,32])
 sn.set_theme()
 nb = 0 
 
@@ -147,7 +147,7 @@ for i,p in enumerate(period) :
 		if j==0 :
 			ax[j][i].set_title(legend[p]+"\n", fontsize=18)
 		if i==0 :
-			ax[j][i].set_ylabel(legend[col]+"\n", fontsize=18, rotation=0, ha="right", labelpad=20)
+			ax[j][i].set_ylabel(legend[col]+"\n", fontsize=18)
 		else : 
 			ax[j][i].set_ylabel(legend[p], visible=False)
 	
