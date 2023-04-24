@@ -8,6 +8,7 @@ from matplotlib.lines import Line2D
 from sklearn import linear_model
 import matplotlib.pyplot as plt
 from scipy.stats import kruskal
+import scikit_posthocs as sp
 from sklearn import metrics
 import seaborn as sn
 import pandas as pd
@@ -43,38 +44,38 @@ logger.info("path_df : "+path_df+" ; path_out : "+path_out)
 # function that calculates for each period the Kruskal-Wallis statistic for all three distributions and then the Mann-Whitney statistic for each pair of distributions and returns a dictionary containing the results.
 def stats_distrib(df_varNetwork_medByForm, period) : 
 
-    columns = ['clusteringCoefficient_networkit', 'PageRank_networkit', 'betweennessInComm_toScale', 'lengthMean_rw']
-    columns_period = [col+"_"+period for col in columns]
+	columns = ['clusteringCoefficient_networkit', 'PageRank_networkit', 'betweennessInComm_toScale', 'lengthMean_rw']
+	columns_period = [col+"_"+period for col in columns]
 
-    # We assign to the control words their global value in period p
-    temp1 = df_varNetwork_medByForm[~(df_varNetwork_medByForm.type=="random")]
-    temp2 = df_varNetwork_medByForm[df_varNetwork_medByForm.type=="random"]
-    for col in columns_period : 
-        temp2[col]=temp2[col[:-len("_"+period)]]
-    df_varNetwork_medByForm = pd.concat([temp1,temp2])
+	# We assign to the control words their global value in period p
+	temp1 = df_varNetwork_medByForm[~(df_varNetwork_medByForm.type=="random")]
+	temp2 = df_varNetwork_medByForm[df_varNetwork_medByForm.type=="random"]
+	for col in columns_period : 
+		temp2[col]=temp2[col[:-len("_"+period)]]
+	df_varNetwork_medByForm = pd.concat([temp1,temp2])
 
-    sous_df = df_varNetwork_medByForm[columns_period]
-    sous_df["type"] = df_varNetwork_medByForm["type"]
+	sous_df = df_varNetwork_medByForm[columns_period]
+	sous_df["type"] = df_varNetwork_medByForm["type"]
 
-    results_stats = {}
+	results_stats = {}
 
-    for col in columns_period : 
-        
-        random = sous_df[sous_df.type=="random"][col].values.tolist()
-        change = sous_df[sous_df.type=="change"][col].values.tolist()
-        buzz = sous_df[sous_df.type=="buzz"][col].values.tolist()
+	for col in columns_period : 
+		
+		random = sous_df[sous_df.type=="random"][col].values.tolist()
+		change = sous_df[sous_df.type=="change"][col].values.tolist()
+		buzz = sous_df[sous_df.type=="buzz"][col].values.tolist()
 
-        results_stats[col] = {}
-        results_stats[col]["kruskal"] = kruskal(random,change,buzz)
-        results_stats[col]["dunn"] = {}
-        
-        data = [random, change, buzz]
-        dunn_results = sp.posthoc_dunn(data, p_adjust="bonferroni")
-        results_stats[col]["dunn"]["random-change"] = dunn_results.loc[1,2]
-        results_stats[col]["dunn"]["random-buzz"] = dunn_results.loc[1,3]
-        results_stats[col]["dunn"]["change-buzz"] = dunn_results.loc[2,3]
+		results_stats[col] = {}
+		results_stats[col]["kruskal"] = kruskal(random,change,buzz)
+		results_stats[col]["dunn"] = {}
+		
+		data = [random, change, buzz]
+		dunn_results = sp.posthoc_dunn(data, p_adjust="bonferroni")
+		results_stats[col]["dunn"]["random-change"] = dunn_results.loc[1,2]
+		results_stats[col]["dunn"]["random-buzz"] = dunn_results.loc[1,3]
+		results_stats[col]["dunn"]["change-buzz"] = dunn_results.loc[2,3]
 
-    return results_stats
+	return results_stats
 
 
 df = pd.read_csv(path_df, index_col=0)
@@ -124,37 +125,37 @@ new_df = pd.concat(allDfToConcat, axis=1)
 new_df["type"] = typeDf.index.map(typeDf.type)
 new_df["period"] = [name.split("_")[1] for name in new_df.index]
 
-fig, ax = plt.subplots(3, 4, figsize=[24,24])
+fig, ax = plt.subplots(4, 3, figsize=[18,24])
 sn.set_theme()
 nb = 0 
 
 # to adjust the scales on the graph
 dic_lim = {'clusteringCoefficient_networkit': (0, 0.22), 'PageRank_networkit': (0.1e-07, 4.5e-07), 'betweennessInComm_toScale': (-0.4, 2), 'lengthMean_rw': (2, 12)}
 
-legend = {"innov":"Innovation", "prop":"Propagation", "fix":"Fixation/Decline", "clusteringCoefficient_networkit" : "Clustering coefficient", "PageRank_networkit":"PageRank score", "betweennessInComm_toScale":"betweenness within the community", "lengthMean_rw":"Average number of steps\nto exit the community"}
+legend = {"innov":"Innovation", "prop":"Propagation", "fix":"Fixation/Decline", "clusteringCoefficient_networkit" : "Clustering coefficient", "PageRank_networkit":"PageRank score", "betweennessInComm_toScale":"Betweenness within\nthe community", "lengthMean_rw":"Average number of steps\nto exit the community"}
 colors = {"change":"#4282B3", "buzz":"#819E57", "random":"#F5A614"}
 
 for i,p in enumerate(period) : 
 		
 	for j,col in enumerate(columns) : 
 		
-		sn.boxplot(data=new_df[new_df.period==p], y=col, x="type", color='#eaeaf2', width=0.6, showfliers=False, notch=True, ax=ax[i][j])
-		sn.stripplot(data=new_df[new_df.period==p], y=col, x="type", palette=colors, size=4, alpha=0.8, ax=ax[i][j])
+		sn.boxplot(data=new_df[new_df.period==p], y=col, x="type", color='#eaeaf2', width=0.6, showfliers=False, notch=True, ax=ax[j][i])
+		sn.stripplot(data=new_df[new_df.period==p], y=col, x="type", palette=colors, size=4, alpha=0.8, ax=ax[j][i])
 		
-		ax[i][j].set_ylim(dic_lim[col])
+		ax[j][i].set_ylim(dic_lim[col])
 		
-		if i==0 :
-			ax[i][j].set_title(legend[col]+"\n", fontsize=18)
 		if j==0 :
-			ax[i][j].set_ylabel(legend[p]+"\n", fontsize=18)
+			ax[j][i].set_title(legend[p]+"\n", fontsize=18)
+		if i==0 :
+			ax[j][i].set_ylabel(legend[col]+"\n", fontsize=18, rotation=0, ha="right", labelpad=20)
 		else : 
-			ax[i][j].set_ylabel(legend[p], visible=False)
+			ax[j][i].set_ylabel(legend[p], visible=False)
 	
-		ax[i][j].set_xticks([])
-		ax[i][j].set_xlabel("", visible=False)
+		ax[j][i].set_xticks([])
+		ax[j][i].set_xlabel("", visible=False)
 		
-plt.subplots_adjust(wspace=0.1)
-plt.subplots_adjust(hspace=0.04)
+plt.subplots_adjust(wspace=0.15)
+plt.subplots_adjust(hspace=0.05)
 
 legend_elements = [Line2D([0], [0], marker='o', color="#eaeaf2", label='Changes',
 						  markerfacecolor=colors["change"], markersize=8),
@@ -162,7 +163,7 @@ legend_elements = [Line2D([0], [0], marker='o', color="#eaeaf2", label='Changes'
 						  markerfacecolor=colors["buzz"], markersize=8),
 				   Line2D([0], [0], marker='o', color='#eaeaf2', label='Control words',
 						  markerfacecolor=colors["random"], markersize=8)]
-ax[i][j].legend(handles=legend_elements, loc='lower right', fontsize=16)
+ax[j][i].legend(handles=legend_elements, loc='lower right', fontsize=16)
 
 plt.savefig(path_out+"12_distrib.png", format="png")
 
@@ -239,7 +240,7 @@ if makePrediction :
 
 			conf_list = []
 			for c in conf : 
-			    conf_list.append([[int(nb) for nb in e] for e in c])
+				conf_list.append([[int(nb) for nb in e] for e in c])
 
 			odds_list = [list(o) for o in odds]
 
@@ -282,8 +283,8 @@ pval_fisher = {}
 for p in period[:2] : 
 	pval_fisher[p] = []
 	for i,m in enumerate(dic["CONF"][p]) :
-	    oddsratio, pvalue = fisher_exact(m, alternative='two-sided')
-	    pval_fisher[p].append(pvalue)
+		oddsratio, pvalue = fisher_exact(m, alternative='two-sided')
+		pval_fisher[p].append(pvalue)
 
 ujson.dump(pval_fisher, open(path_out+"12_pval_fisher.json", "w"))
 
