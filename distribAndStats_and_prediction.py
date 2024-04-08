@@ -271,12 +271,12 @@ def plot_eval(e) :
 		sn.histplot(data, stat="percent",element="bars", color=colors[i], zorder=1, alpha=0.6)
 		plt.xlim([0,1])
 		plt.xlabel(e, fontsize=14)
-		plt.ylabel("Pourcentage", fontsize=14)
-		plt.axvline(x=np.mean(data), linewidth=3, color=colors[i], linestyle="--", zorder=1, label=e+" mean - "+legend[p]+" : "+str(round(np.mean(data),2)))
+		plt.ylabel("Percentage", fontsize=14)
+		plt.axvline(x=np.mean(data), linewidth=3, color=colors[i], linestyle="--", zorder=1, label="Average "+e+" - "+legend[p]+" : "+str(round(np.mean(data),2)))
 		plt.legend(fontsize=13)
 
 
-	plt.savefig(path_out+"12_"+e+".png", format='png')
+	plt.savefig(path_out+"12_"+e+".png", format='png', bbox_inches='tight')
 
 # to compute Fisher exact test on confusion matrix
 pval_fisher = {}
