@@ -42,7 +42,18 @@ This repository contains the scripts used to calculate the network variables of 
 			- "betweennessInCommunity_approx", indicating whether the measure of centrality is an exact or approximate measure ;
 			- "betweennessInComm_toScale", indicating the measure of centrality in the community associated with each user scaling up so that measurements are comparable between all network users.
 
-3. selection_randomWordSamples.py
+3. randomWalk.py
+
+	Script that performs random walks from nodes in the network.
+
+	- **Input** : 
+		- *-c* : path to the community partition file
+		- *-e* : path to the file contains all the links between the users of the corpus
+	
+	- **Output** :
+		- files in pickle format containing in keys the identifiers of the nodes from which the random walks started, and in values as many lists of trajectories (nodes through which the walk passed before arriving at a node belonging to a community other than that of the starting node) as random walks carried out. 
+
+4. selection_randomWordSamples.py
 
 	Script that select 100 samples of 200 words with a relatively stable 5-year usage trajectory, each of which can act as a control group if matched with lexical innovations. 
 
@@ -64,7 +75,7 @@ This repository contains the scripts used to calculate the network variables of 
 		- a dictionnary containing the total number of users of this words 
 		- 100 dataframes, each containing 200 of these words, whose distribution in terms of number of users is similar to that of the lexical innovations 
 
-4. medByForm.py
+5. medByForm.py
 
 	Script retrieving for each innovation (buzz and change), and for each phase of diffusion, the users who adopt it at that phase; then retrieving for each network variable the median value of each of these sets to characterise each of the words. For the control words, the same procedure is used except that all their users over the 5 years considered are taken into account.  
 
@@ -83,7 +94,7 @@ This repository contains the scripts used to calculate the network variables of 
 
 		- as many dataframes as there are sample randoms, each containing for each control word, each buzz, and each change, the median values of their users at each phase, for each of the network variables considered.
 
-5. distribAndStats_and_prediction.py
+6. distribAndStats_and_prediction.py
 
 	Script allowing to visualize the distributions of buzz, change, control words at different phases and according to each of the variables; to calculate the corresponding statistics, and to make predictions about the fate of lexical innovations in the innovation and propagation phases.  
 
@@ -100,3 +111,7 @@ This repository contains the scripts used to calculate the network variables of 
 		- visualisations of distributions of changes, buzz, and control words at the different phases and for each network variable 
 		- prediction results in terms of accuracy, AUC score, and confusion matrices
 		- visualisations of the distributions of results in terms of accuracy and AUC score for prediction
+
+7. Data 
+	- **df_varNetwork_medByForm.csv** : contains the median value associated with each word (buzzes, changes, controls) for each variable and each phase. 
+	- **clients_list.txt** : contains the list of Twitter clients for whom tweets have been kept.

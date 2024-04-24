@@ -1,4 +1,5 @@
 # coding:utf-8
+from sklearn.preprocessing import RobustScaler
 from multiprocessing import Pool,cpu_count
 import networkit as nk
 import pandas as pd
